@@ -16,6 +16,7 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mongoose": "^6.8.1",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {

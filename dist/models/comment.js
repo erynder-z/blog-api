@@ -22,18 +22,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv = __importStar(require("dotenv"));
-const bodyParser = __importStar(require("body-parser"));
-const routes_1 = require("./routes");
-const app = (0, express_1.default)();
-dotenv.config();
-app.use(bodyParser.json());
-app.use('/', routes_1.routes);
-app.listen(process.env.PORT, () => {
-    console.log(`now listening on port ${process.env.PORT}`);
+const mongoose = __importStar(require("mongoose"));
+const mongoose_1 = require("mongoose");
+const commentSchema = new mongoose_1.Schema({
+    author: { type: String, required: true },
+    text: { type: String, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
 });
+exports.default = mongoose.model('Comment', commentSchema);
