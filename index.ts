@@ -1,12 +1,15 @@
-import express, { Express, Request, Response } from 'express';
-const port = 8000;
+import express, { Express } from 'express';
+import * as dotenv from 'dotenv';
+import * as bodyParser from 'body-parser';
+import { routes } from './routes';
 
 const app: Express = express();
+dotenv.config();
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('HELLO FROM EXPRESS + TS!');
-});
+app.use(bodyParser.json());
 
-app.listen(port, () => {
-  console.log(`now listening on port ${port}`);
+app.use('/', routes);
+
+app.listen(process.env.PORT, () => {
+  console.log(`now listening on port ${process.env.PORT}`);
 });
