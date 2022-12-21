@@ -28,12 +28,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv = __importStar(require("dotenv"));
+const http_errors_1 = __importDefault(require("http-errors"));
 const bodyParser = __importStar(require("body-parser"));
 const routes_1 = require("./routes");
+const error_middleware_1 = __importDefault(require("./middleware/error.middleware"));
 const app = (0, express_1.default)();
 dotenv.config();
 app.use(bodyParser.json());
 app.use('/', routes_1.routes);
+app.use(function (req, res, next) {
+    next((0, http_errors_1.default)(404));
+});
+app.use(error_middleware_1.default);
 app.listen(process.env.PORT, () => {
     console.log(`now listening on port ${process.env.PORT}`);
 });
