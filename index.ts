@@ -1,14 +1,29 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import createError from 'http-errors';
 import * as bodyParser from 'body-parser';
+import logger from 'morgan';
+import cookieParser from 'cookie-parser';
+import path from 'path';
 import { routes } from './routes';
 import errorMiddleware from './middleware/error.middleware';
 
 const app: Express = express();
 dotenv.config();
 
+const mongoDB = `${process.env.MONGODB_URI}`;
+
+mongoose.connect(mongoDB);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
 app.use(bodyParser.json());
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
