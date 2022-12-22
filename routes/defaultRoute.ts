@@ -4,7 +4,7 @@ import { Router } from 'express';
 export const defaultRoute = Router();
 
 defaultRoute.get('/', (req, res) => {
-  res.send('Hello from default route!');
+  res.send('blog startpage');
 });
 
 defaultRoute.post('/', (req: Request, res: Response) => {
