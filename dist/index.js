@@ -39,6 +39,7 @@ const error_middleware_1 = __importDefault(require("./middleware/error.middlewar
 const app = (0, express_1.default)();
 dotenv.config();
 const mongoDB = `${process.env.MONGODB_URI}`;
+mongoose_1.default.set('strictQuery', false);
 mongoose_1.default.connect(mongoDB);
 const db = mongoose_1.default.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
