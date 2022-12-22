@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Schema, model, connect } from 'mongoose';
+import { Schema } from 'mongoose';
 
 interface IUser {
   username: string;

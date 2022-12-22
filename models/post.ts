@@ -1,9 +1,7 @@
 import * as mongoose from 'mongoose';
-import { Schema, Document } from 'mongoose';
-import { ITag } from './tag';
-import { IComment } from './comment';
+import { Schema, Types } from 'mongoose';
 
-export interface IPost extends Document {
+export interface IPost {
   title: string;
   text: string;
   timestamp: Date;
@@ -11,8 +9,8 @@ export interface IPost extends Document {
     data: Buffer;
     contentType: String;
   };
-  tags: ITag['_id'];
-  comments: IComment['_id'];
+  tags: Types.ObjectId[];
+  comments: Types.ObjectId[];
   isPublished: boolean;
 }
 
