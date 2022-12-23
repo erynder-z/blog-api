@@ -1,16 +1,22 @@
-import * as mongoose from 'mongoose';
-import { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IComment extends Document {
+export interface IComment {
   author: string;
   text: string;
   timestamp: Date;
 }
 
-const commentSchema = new Schema<IComment>({
-  author: { type: String, required: true },
-  text: { type: String, required: true },
-  timestamp: { type: Date, required: true, default: Date.now },
-});
+export interface ICommentModel extends IComment, Document {}
 
-export default mongoose.model<IComment>('Comment', commentSchema);
+const CommentSchema: Schema = new Schema(
+  {
+    author: { type: String, required: true },
+    text: { type: String, required: true },
+    timestamp: { type: Date, required: true, default: Date.now },
+  },
+  {
+    versionKey: false,
+  }
+);
+
+export default mongoose.model<ICommentModel>('Comment', CommentSchema);
