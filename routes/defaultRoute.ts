@@ -3,10 +3,10 @@ import { Router } from 'express';
 
 export const defaultRoute = Router();
 
-defaultRoute.get('/', (req, res) => {
+defaultRoute.get('/api', (req, res) => {
   res.send('blog startpage');
 });
 
-defaultRoute.post('/', (req: Request, res: Response) => {
+defaultRoute.post('/api', (req: Request, res: Response) => {
   res.send(req.body);
 });
