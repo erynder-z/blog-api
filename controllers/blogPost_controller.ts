@@ -71,7 +71,7 @@ const create_blogPost_post = [
               tag.checked = 'true';
             }
           }
-          res.json({
+          res.status(400).json({
             title: 'Failed to save post!',
             tags: results.tags,
             errors: errors.array(),
@@ -87,7 +87,7 @@ const create_blogPost_post = [
         return next(err);
       }
 
-      res.json({
+      res.status(200).json({
         title: 'Post saved successfully!',
         post,
       });

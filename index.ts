@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 passport.use(
   new JWTstrategy(
     {
-      secretOrKey: process.env.SECRET_KEY,
+      secretOrKey: process.env.TOKEN_SECRET_KEY,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     },
     async (token, done) => {
@@ -58,17 +58,13 @@ passport.use(
         return done(null, false, { message: 'User not found' });
       }
 
-      bcrypt.compare(password, user.password, (err, res) => {
-        if (res) {
-          // passwords match! log user in
-          return done(null, user);
-        } else {
-          // passwords do not match!
-          return done(null, false, { message: 'Incorrect password' });
-        }
-      });
+      const passwordMatches = await bcrypt.compare(password, user.password);
 
-      return done(null, user, { message: 'Logged in Successfully' });
+      if (!passwordMatches) {
+        return done(null, false, { message: 'invalid credentials!' });
+      }
+
+      return done(null, user, { message: 'Logged in successfully!' });
     } catch (error) {
       return done(error);
     }
