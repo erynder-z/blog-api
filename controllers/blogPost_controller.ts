@@ -1,8 +1,9 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import async from 'async';
-import Post from '../models/post';
+import Post, { IPostModel } from '../models/post';
 import Tag from '../models/tag';
+import { CallbackError } from 'mongoose';
 
 const show_blogPost_get = (req: Request, res: Response) => {
   res.send('show blogpost get');
@@ -99,8 +100,25 @@ const delete_blogPost_get = (req: Request, res: Response) => {
   res.send('delete blogpost get');
 };
 
-const delete_blogPost_post = (req: Request, res: Response) => {
-  res.send('delete blogpost post');
+const delete_blogPost_post = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  Post.findById(req.params.id).exec(function (
+    err: CallbackError,
+    result: IPostModel | null
+  ) {
+    if (err) {
+      return next(err);
+    }
+    Post.findByIdAndRemove(result?._id, (err: CallbackError) => {
+      if (err) {
+        return next(err);
+      }
+      res.status(200).json({ title: 'Post deleted!' });
+    });
+  });
 };
 
 const update_blogPost_get = (req: Request, res: Response) => {
