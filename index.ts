@@ -9,10 +9,7 @@ import path from 'path';
 import { routes } from './routes';
 import errorMiddleware from './middleware/error.middleware';
 import passport from 'passport';
-import { Strategy as localStrategy } from 'passport-local';
-import { Strategy as JWTstrategy, ExtractJwt } from 'passport-jwt';
-import bcrypt from 'bcrypt';
-import Author from './models/author';
+import { initializePassport } from './passport-config';
 
 const app: Express = express();
 dotenv.config();
@@ -32,64 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-passport.use(
-  new JWTstrategy(
-    {
-      secretOrKey: process.env.TOKEN_SECRET_KEY,
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    },
-    async (token, done) => {
-      try {
-        return done(null, token.user);
-      } catch (error) {
-        done(error);
-      }
-    }
-  )
-);
-
-passport.use(
-  'login',
-  new localStrategy(async (username, password, done) => {
-    try {
-      const user = await Author.findOne({ username });
-
-      if (!user) {
-        return done(null, false, { message: 'User not found' });
-      }
-
-      const passwordMatches = await bcrypt.compare(password, user.password);
-
-      if (!passwordMatches) {
-        return done(null, false, { message: 'invalid credentials!' });
-      }
-
-      return done(null, user, { message: 'Logged in successfully!' });
-    } catch (error) {
-      return done(error);
-    }
-  })
-);
-
-passport.use(
-  'signup',
-  new localStrategy(async (username, password, done) => {
-    try {
-      bcrypt.hash(password, 10, async (err, hashedPassword) => {
-        if (err) {
-          return next(err);
-        }
-        // store hashedPassword in DB
-        password = hashedPassword;
-        const user = await Author.create({ username, password });
-
-        return done(null, user);
-      });
-    } catch (error) {
-      done(error);
-    }
-  })
-);
+initializePassport();
 
 app.use('/', routes);
 
@@ -102,6 +42,3 @@ app.use(errorMiddleware);
 app.listen(process.env.PORT, () => {
   console.log(`now listening on port ${process.env.PORT}`);
 });
-function next(err: NativeError): void {
-  throw new Error('Function not implemented.');
-}

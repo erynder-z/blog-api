@@ -7,6 +7,7 @@ const signup_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
+  // TODO: Add custom validator to prevent dupe usernames.
   body(
     'password',
     'Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, one number, and one symbol.'
@@ -31,7 +32,7 @@ const signup_post = [
         return next(err);
       }
       res.json({
-        message: 'Signed-up sucessfuly',
+        message: 'Signed-up sucessfuly! Please log in to post!',
         user: req.user,
       });
     })(req, res, next);
