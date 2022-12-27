@@ -1,13 +1,26 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import { body, validationResult } from 'express-validator';
+import Author from '../models/author';
 
 const signup_post = [
   body('username', 'Username must not be empty.')
     .trim()
     .isLength({ min: 1 })
-    .escape(),
-  // TODO: Add custom validator to prevent dupe usernames.
+    .escape()
+    .custom(async (username: String) => {
+      try {
+        const alreadyExistingUsername = await Author.findOne({
+          username: username,
+        });
+
+        if (alreadyExistingUsername) {
+          throw new Error('Username already in use');
+        }
+      } catch (err) {
+        throw new Error('Something went wrong when validating username');
+      }
+    }),
   body(
     'password',
     'Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, one number, and one symbol.'
