@@ -31,8 +31,8 @@ blogRoute.get(
   blogPost_controller.update_blogPost_get
 );
 
-blogRoute.post(
+blogRoute.put(
   '/api/update_post/:id',
   passport.authenticate('jwt', { session: false }),
-  blogPost_controller.update_blogPost_post
+  blogPost_controller.update_blogPost_put
 );

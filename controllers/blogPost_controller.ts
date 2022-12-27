@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 import async from 'async';
 import Post, { IPostModel } from '../models/post';
 import Tag from '../models/tag';
+import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
 const show_blogPost_get = (req: Request, res: Response) => {
@@ -41,12 +42,13 @@ const create_blogPost_post = [
     .isLength({ min: 1 })
     .escape(),
   body('text', 'Text must not be empty.').trim().isLength({ min: 1 }).escape(),
-  body('tag.*').escape(),
+  body('tags.*').escape(),
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
 
     const post = new Post({
+      author: req.user,
       title: req.body.title,
       text: req.body.text,
       timestamp: Date.now(),
@@ -125,9 +127,105 @@ const update_blogPost_get = (req: Request, res: Response) => {
   res.send('delete blogpost get');
 };
 
-const update_blogPost_post = (req: Request, res: Response) => {
-  res.send('delete blogpost post');
-};
+const update_blogPost_put = [
+  (req: Request, res: Response, next: NextFunction) => {
+    if (!Array.isArray(req.body.tags)) {
+      req.body.tags =
+        typeof req.body.tags === 'undefined' ? [] : [req.body.tags];
+    }
+    next();
+  },
+  (req: Request, res: Response, next: NextFunction) => {
+    if (!Array.isArray(req.body.comments)) {
+      req.body.comments =
+        typeof req.body.comments === 'undefined' ? [] : [req.body.comments];
+    }
+    next();
+  },
+
+  body('title', 'Title must not be empty.')
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body('text', 'Text must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('tags.*').escape(),
+  body('comments.*').escape(),
+
+  (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+
+    const post = new Post({
+      _id: req.params.id,
+      author: req.body.author,
+      title: req.body.title,
+      text: req.body.text,
+      timestamp: req.body.timestamp,
+      image: {
+        data: req.file?.buffer,
+        contentType: req.file?.mimetype,
+      },
+      tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
+      comments:
+        typeof req.body.comments === 'undefined' ? [] : req.body.comments,
+      isPublished: req.body.isPublished,
+    });
+
+    if (!errors.isEmpty()) {
+      async.parallel(
+        {
+          tags(callback) {
+            Tag.find(callback);
+          },
+          comments(callback) {
+            Comment.find(callback);
+          },
+        },
+        (err: Error | undefined, results: async.Dictionary<any>) => {
+          if (err) {
+            return next(err);
+          }
+
+          for (const tag of results.tags) {
+            if (post.tags.includes(tag._id)) {
+              tag.checked = 'true';
+            }
+          }
+
+          for (const comment of results.comments) {
+            if (post.comments.includes(comment._id)) {
+              comment.checked = 'true';
+            }
+          }
+
+          res.status(400).json({
+            title: 'Failed to update post!',
+            tags: results.tags,
+            comments: results.comments,
+            errors: errors.array(),
+            post,
+          });
+        }
+      );
+      return;
+    }
+
+    Post.findByIdAndUpdate(
+      req.params.id,
+      post,
+      {},
+      (err: CallbackError, thePost: IPostModel | null) => {
+        if (err) {
+          return next(err);
+        }
+
+        res.status(200).json({
+          title: 'Post updated successfully!',
+          post,
+        });
+      }
+    );
+  },
+];
 
 export {
   show_blogPost_get,
@@ -136,5 +234,5 @@ export {
   delete_blogPost_get,
   delete_blogPost_post,
   update_blogPost_get,
-  update_blogPost_post,
+  update_blogPost_put,
 };
