@@ -12,7 +12,9 @@ const show_all_posts_get = (
   next: NextFunction
 ) => {
   Post.find({})
-    .sort({ msg_timestamp: -1 })
+    .sort({
+      timestamp: -1,
+    })
     .exec(function (err, list_posts) {
       if (err) {
         return next(err);
@@ -32,7 +34,7 @@ const show_latest_posts_get = (
   const postLimit = 10;
 
   Post.find({})
-    .sort({ msg_timestamp: -1 })
+    .sort({ timestamp: -1 })
     .limit(postLimit)
     .exec(function (err, list_posts) {
       if (err) {
