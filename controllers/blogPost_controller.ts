@@ -11,7 +11,7 @@ const show_all_posts = (req: Request, res: Response, next: NextFunction) => {
     .sort({
       timestamp: -1,
     })
-    .exec(function (err, list_posts) {
+    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
       if (err) {
         return next(err);
       }
@@ -28,7 +28,7 @@ const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
   Post.find({})
     .sort({ timestamp: -1 })
     .limit(postLimit)
-    .exec(function (err, list_posts) {
+    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
       if (err) {
         return next(err);
       }
@@ -42,7 +42,7 @@ const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
 const show_certain_post = (req: Request, res: Response, next: NextFunction) => {
   Post.find({})
     .sort({ msg_timestamp: -1 })
-    .exec(function (err, list_posts) {
+    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
       if (err) {
         return next(err);
       }
