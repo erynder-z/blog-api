@@ -25,9 +25,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const TagSchema = new mongoose_1.Schema({
-    tag: { type: String, required: true },
+    name: { type: String, required: true },
 }, {
     versionKey: false,
 });
+TagSchema.virtual('url').get(function () {
+    return `/api/tag/${this._id}`;
+});
 exports.default = mongoose_1.default.model('Tag', TagSchema);
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGFnLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vbW9kZWxzL3RhZy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUEscURBQXNEO0FBUXRELE1BQU0sU0FBUyxHQUFXLElBQUksaUJBQU0sQ0FDbEM7SUFDRSxHQUFHLEVBQUUsRUFBRSxJQUFJLEVBQUUsTUFBTSxFQUFFLFFBQVEsRUFBRSxJQUFJLEVBQUU7Q0FDdEMsRUFDRDtJQUNFLFVBQVUsRUFBRSxLQUFLO0NBQ2xCLENBQ0YsQ0FBQztBQUVGLGtCQUFlLGtCQUFRLENBQUMsS0FBSyxDQUFZLEtBQUssRUFBRSxTQUFTLENBQUMsQ0FBQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGFnLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vbW9kZWxzL3RhZy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBQUEscURBQXNEO0FBVXRELE1BQU0sU0FBUyxHQUFXLElBQUksaUJBQU0sQ0FDbEM7SUFDRSxJQUFJLEVBQUUsRUFBRSxJQUFJLEVBQUUsTUFBTSxFQUFFLFFBQVEsRUFBRSxJQUFJLEVBQUU7Q0FDdkMsRUFDRDtJQUNFLFVBQVUsRUFBRSxLQUFLO0NBQ2xCLENBQ0YsQ0FBQztBQUVGLFNBQVMsQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLENBQUMsR0FBRyxDQUFDO0lBQzNCLE9BQU8sWUFBWSxJQUFJLENBQUMsR0FBRyxFQUFFLENBQUM7QUFDaEMsQ0FBQyxDQUFDLENBQUM7QUFFSCxrQkFBZSxrQkFBUSxDQUFDLEtBQUssQ0FBWSxLQUFLLEVBQUUsU0FBUyxDQUFDLENBQUMifQ==
