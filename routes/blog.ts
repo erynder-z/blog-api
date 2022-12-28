@@ -7,6 +7,8 @@ export const blogRoute = Router();
 
 blogRoute.get('/api/all_posts', blogPost_controller.show_all_posts_get);
 
+blogRoute.get('/api/latest_posts', blogPost_controller.show_latest_posts_get);
+
 blogRoute.get('/api/post/:id', blogPost_controller.show_certain_post_get);
 
 blogRoute.get(
