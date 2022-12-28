@@ -6,8 +6,40 @@ import Tag from '../models/tag';
 import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
-const show_blogPost_get = (req: Request, res: Response) => {
-  res.send('show blogpost get');
+const show_all_posts_get = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  Post.find({})
+    .sort({ msg_timestamp: -1 })
+    .exec(function (err, list_posts) {
+      if (err) {
+        return next(err);
+      }
+
+      res.status(200).json({
+        post_list: list_posts,
+      });
+    });
+};
+
+const show_certain_post_get = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  Post.find({})
+    .sort({ msg_timestamp: -1 })
+    .exec(function (err, list_posts) {
+      if (err) {
+        return next(err);
+      }
+
+      res.status(200).json({
+        post_list: list_posts,
+      });
+    });
 };
 
 const create_blogPost_get = (
@@ -228,7 +260,8 @@ const update_blogPost_put = [
 ];
 
 export {
-  show_blogPost_get,
+  show_all_posts_get,
+  show_certain_post_get,
   create_blogPost_get,
   create_blogPost_post,
   delete_blogPost_get,

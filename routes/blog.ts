@@ -5,7 +5,9 @@ import * as blogPost_controller from '../controllers/blogPost_controller';
 
 export const blogRoute = Router();
 
-blogRoute.get('/api/post/:id', blogPost_controller.show_blogPost_get);
+blogRoute.get('/api/all_posts', blogPost_controller.show_all_posts_get);
+
+blogRoute.get('/api/post/:id', blogPost_controller.show_certain_post_get);
 
 blogRoute.get(
   '/api/create_post',
