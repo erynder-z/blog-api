@@ -7,22 +7,22 @@ export const tagRoute = Router();
 
 tagRoute.get('/api/tags', tag_controller.show_all_tags);
 
-tagRoute.get('/api/tag/:id', tag_controller.show_tag_detail);
+tagRoute.get('/api/tags/:id', tag_controller.show_tag_detail);
 
 tagRoute.post(
-  '/api/create_tag',
+  '/api/tags',
   passport.authenticate('jwt', { session: false }),
   tag_controller.create_tag
 );
 
 tagRoute.delete(
-  '/api/tag/:id/delete',
+  '/api/tags/:id',
   passport.authenticate('jwt', { session: false }),
   tag_controller.create_tag
 );
 
 tagRoute.put(
-  '/api/tag/:id/update',
+  '/api/tags/:id',
   passport.authenticate('jwt', { session: false }),
   tag_controller.update_tag
 );
