@@ -6,11 +6,7 @@ import Tag from '../models/tag';
 import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
-const show_all_posts_get = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const show_all_posts = (req: Request, res: Response, next: NextFunction) => {
   Post.find({})
     .sort({
       timestamp: -1,
@@ -26,11 +22,7 @@ const show_all_posts_get = (
     });
 };
 
-const show_latest_posts_get = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
   const postLimit = 10;
 
   Post.find({})
@@ -47,11 +39,7 @@ const show_latest_posts_get = (
     });
 };
 
-const show_certain_post_get = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const show_certain_post = (req: Request, res: Response, next: NextFunction) => {
   Post.find({})
     .sort({ msg_timestamp: -1 })
     .exec(function (err, list_posts) {
@@ -153,11 +141,7 @@ const create_blogPost_post = [
   },
 ];
 
-const delete_blogPost_post = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const delete_blogPost = (req: Request, res: Response, next: NextFunction) => {
   Post.findById(req.params.id).exec(function (
     err: CallbackError,
     result: IPostModel | null
@@ -174,7 +158,7 @@ const delete_blogPost_post = (
   });
 };
 
-const update_blogPost_put = [
+const update_blogPost = [
   (req: Request, res: Response, next: NextFunction) => {
     if (!Array.isArray(req.body.tags)) {
       req.body.tags =
@@ -275,11 +259,11 @@ const update_blogPost_put = [
 ];
 
 export {
-  show_all_posts_get,
-  show_latest_posts_get,
-  show_certain_post_get,
+  show_all_posts,
+  show_latest_posts,
+  show_certain_post,
   create_blogPost_get,
   create_blogPost_post,
-  delete_blogPost_post,
-  update_blogPost_put,
+  delete_blogPost,
+  update_blogPost,
 };
