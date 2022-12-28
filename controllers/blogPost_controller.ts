@@ -153,10 +153,6 @@ const create_blogPost_post = [
   },
 ];
 
-const delete_blogPost_get = (req: Request, res: Response) => {
-  res.send('delete blogpost get');
-};
-
 const delete_blogPost_post = (
   req: Request,
   res: Response,
@@ -176,10 +172,6 @@ const delete_blogPost_post = (
       res.status(200).json({ title: 'Post deleted!' });
     });
   });
-};
-
-const update_blogPost_get = (req: Request, res: Response) => {
-  res.send('delete blogpost get');
 };
 
 const update_blogPost_put = [
@@ -288,8 +280,6 @@ export {
   show_certain_post_get,
   create_blogPost_get,
   create_blogPost_post,
-  delete_blogPost_get,
   delete_blogPost_post,
-  update_blogPost_get,
   update_blogPost_put,
 };

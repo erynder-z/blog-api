@@ -29,12 +29,6 @@ blogRoute.post(
   blogPost_controller.delete_blogPost_post
 );
 
-blogRoute.get(
-  '/api/update_post/:id',
-  passport.authenticate('jwt', { session: false }),
-  blogPost_controller.update_blogPost_get
-);
-
 blogRoute.put(
   '/api/update_post/:id',
   passport.authenticate('jwt', { session: false }),
