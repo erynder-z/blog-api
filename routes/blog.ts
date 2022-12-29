@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import { Router } from 'express';
 import passport from 'passport';
 import * as blogPost_controller from '../controllers/blogPost_controller';
+import * as comment_controller from '../controllers/comment_controller';
 
 export const blogRoute = Router();
 
@@ -33,4 +34,18 @@ blogRoute.put(
   '/api/posts/:id',
   passport.authenticate('jwt', { session: false }),
   blogPost_controller.update_blogPost
+);
+
+blogRoute.post('/api/posts/:id/comment', comment_controller.create_comment);
+
+blogRoute.delete(
+  '/api/posts/:id/comment',
+  passport.authenticate('jwt', { session: false }),
+  comment_controller.delete_comment
+);
+
+blogRoute.put(
+  '/api/posts/:id/comment',
+  passport.authenticate('jwt', { session: false }),
+  comment_controller.edit_comment
 );
