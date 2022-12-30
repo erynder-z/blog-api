@@ -6,6 +6,7 @@ import * as bodyParser from 'body-parser';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import path from 'path';
+import cors from 'cors';
 import { routes } from './routes';
 import errorMiddleware from './middleware/error.middleware';
 import passport from 'passport';
@@ -21,6 +22,10 @@ mongoose.connect(mongoDB);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+app.use(cors());
+/* app.use(cors({
+  origin: ['http://localhost:3000', 'http://example.com']
+})); */
 app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(logger('dev'));
