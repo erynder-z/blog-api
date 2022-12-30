@@ -15,7 +15,8 @@ export const initializePassport = () => {
         try {
           return done(null, token.user);
         } catch (error) {
-          done(error);
+          console.log(error);
+          return done(error);
         }
       }
     )
@@ -39,6 +40,7 @@ export const initializePassport = () => {
 
         return done(null, user, { message: 'Logged in successfully!' });
       } catch (error) {
+        console.log(error);
         return done(error);
       }
     })
@@ -59,7 +61,8 @@ export const initializePassport = () => {
           return done(null, user);
         });
       } catch (error) {
-        done(error);
+        console.log(error);
+        return done(error);
       }
     })
   );
