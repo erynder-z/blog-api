@@ -7,7 +7,7 @@ export interface IPost {
   timestamp: Date;
   image?: {
     data: Buffer;
-    contentType: String;
+    contentType: string;
   };
   tags: Types.ObjectId[];
   comments: Types.ObjectId[];
