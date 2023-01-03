@@ -46,18 +46,17 @@ const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const show_certain_post = (req: Request, res: Response, next: NextFunction) => {
-  Post.find({})
-    .sort({ msg_timestamp: -1 })
+  Post.findOne({})
     .populate('author', 'username')
     .populate('comments')
     .populate('tags')
-    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
+    .exec(function (err: CallbackError, post: IPostModel | null) {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: list_posts,
+        post: post,
       });
     });
 };
