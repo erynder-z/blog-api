@@ -46,7 +46,8 @@ const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const show_certain_post = (req: Request, res: Response, next: NextFunction) => {
-  Post.findOne({})
+  Post.findById(req.params.id)
+    .sort({ timestamp: -1 })
     .populate('author', 'username')
     .populate('comments')
     .populate('tags')
