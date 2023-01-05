@@ -7,7 +7,7 @@ import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
 const show_all_tags = (req: Request, res: Response, next: NextFunction) => {
-  Tag.find()
+  Tag.find({})
     .sort([['tag', 'ascending']])
     .exec(function (err: CallbackError, list_tags: ITagModel[] | null) {
       if (err) {
