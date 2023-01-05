@@ -78,7 +78,10 @@ const create_tag = [
               if (err) {
                 return next(err);
               }
-              res.redirect(`${tag.url}`);
+              res.status(200).json({
+                title: 'Tag saved successfully!',
+                tag,
+              });
             });
           }
         }
