@@ -26,7 +26,7 @@ const show_all_posts = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
-  const postLimit = 10;
+  const postLimit = 12;
 
   Post.find({})
     .sort({ timestamp: -1 })
@@ -104,7 +104,7 @@ const create_blogPost_post = [
       title: req.body.title,
       text: req.body.text,
       timestamp: Date.now(),
-      tags: [],
+      tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments: [],
       isPublished: false,
     });
