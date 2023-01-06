@@ -7,7 +7,7 @@ import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
 const show_all_posts = (req: Request, res: Response, next: NextFunction) => {
-  Post.find({})
+  Post.find({ isPublished: true })
     .sort({
       timestamp: -1,
     })
@@ -28,7 +28,7 @@ const show_all_posts = (req: Request, res: Response, next: NextFunction) => {
 const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
   const postLimit = 12;
 
-  Post.find({})
+  Post.find({ isPublished: true })
     .sort({ timestamp: -1 })
     .populate('author', 'username')
     .populate('comments')
