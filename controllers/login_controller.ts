@@ -30,6 +30,27 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
       return next(error);
     }
   })(req, res, next);
+
+  // TODO: LOGOUT
 };
 
-export { login_post };
+const check_token = async (req: Request, res: Response, next: NextFunction) => {
+  const bearerHeader = req.headers['authorization'];
+  if (typeof bearerHeader !== 'undefined') {
+    const bearer = bearerHeader.split(' ');
+    const token = bearer[1];
+
+    const secret = process.env.TOKEN_SECRET_KEY as string;
+
+    try {
+      const decoded = jwt.verify(token, secret);
+      if (typeof decoded === 'object') {
+        res.status(200).json({ user: decoded.user });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
+
+export { login_post, check_token };
