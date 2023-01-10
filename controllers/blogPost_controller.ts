@@ -25,6 +25,29 @@ const show_all_posts = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
+const show_all_posts_admin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  Post.find({})
+    .sort({
+      timestamp: -1,
+    })
+    .populate('author', 'username')
+    .populate('comments')
+    .populate('tags')
+    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
+      if (err) {
+        return next(err);
+      }
+
+      res.status(200).json({
+        post_list: list_posts,
+      });
+    });
+};
+
 const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
   const postLimit = 12;
 
@@ -62,24 +85,26 @@ const show_certain_post = (req: Request, res: Response, next: NextFunction) => {
     });
 };
 
-const create_blogPost_get = (
+const show_unpublished_posts = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  async.parallel(
-    {
-      tags(callback) {
-        Tag.find(callback);
-      },
-    },
-    (err: Error | undefined, results: async.Dictionary<any>) => {
+  Post.find({ isPublished: false })
+    .sort({
+      timestamp: -1,
+    })
+    .populate('author', 'username')
+    .populate('comments')
+    .populate('tags')
+    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
       if (err) {
         return next(err);
       }
-      res.json({ tags: results.tags });
-    }
-  );
+      res.status(200).json({
+        post_list: list_posts,
+      });
+    });
 };
 
 const create_blogPost_post = [
@@ -269,9 +294,10 @@ const update_blogPost = [
 
 export {
   show_all_posts,
+  show_all_posts_admin,
   show_latest_posts,
   show_certain_post,
-  create_blogPost_get,
+  show_unpublished_posts,
   create_blogPost_post,
   delete_blogPost,
   update_blogPost,
