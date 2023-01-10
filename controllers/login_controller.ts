@@ -46,6 +46,8 @@ const check_token = async (req: Request, res: Response, next: NextFunction) => {
       const decoded = jwt.verify(token, secret);
       if (typeof decoded === 'object') {
         res.status(200).json({ user: decoded.user });
+      } else {
+        res.status(401);
       }
     } catch (error) {
       console.log(error);
