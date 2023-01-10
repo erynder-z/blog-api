@@ -10,13 +10,25 @@ blogRoute.get('/api/posts/all', blogPost_controller.show_all_posts);
 
 blogRoute.get('/api/posts/latest', blogPost_controller.show_latest_posts);
 
-blogRoute.get('/api/posts/:id', blogPost_controller.show_certain_post);
+blogRoute.get(
+  '/api/admin/posts/all',
+  passport.authenticate('jwt', { session: false }),
+  blogPost_controller.show_all_posts_admin
+);
 
 blogRoute.get(
-  '/api/posts',
+  '/api/admin/posts/published',
   passport.authenticate('jwt', { session: false }),
-  blogPost_controller.create_blogPost_get
+  blogPost_controller.show_all_posts
 );
+
+blogRoute.get(
+  '/api/admin/posts/unpublished',
+  passport.authenticate('jwt', { session: false }),
+  blogPost_controller.show_unpublished_posts
+);
+
+blogRoute.get('/api/posts/:id', blogPost_controller.show_certain_post);
 
 blogRoute.post(
   '/api/posts',
