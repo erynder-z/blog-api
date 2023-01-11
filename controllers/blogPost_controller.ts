@@ -131,7 +131,7 @@ const create_blogPost_post = [
       timestamp: Date.now(),
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments: [],
-      isPublished: false,
+      isPublished: req.body.publishPost === 'on' ? true : false,
     });
 
     if (!errors.isEmpty()) {
