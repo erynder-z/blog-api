@@ -3,13 +3,16 @@ import passport from 'passport';
 import { body, validationResult } from 'express-validator';
 import Author from '../models/author';
 
-const signup_post = [
+const validateSignup = [
   body('username', 'Username must not be empty.')
     .trim()
     .isLength({ min: 1 })
     .escape()
-    .custom(async (username: String) => {
+    .custom(async (username: string) => {
       try {
+        if (!/^[a-zA-Z0-9]+$/.test(username)) {
+          throw new Error('Username must be alphanumeric.');
+        }
         const alreadyExistingUsername = await Author.findOne({
           username: username,
         });
@@ -31,25 +34,38 @@ const signup_post = [
   body('confirmPassword', 'Passwords do not match.').custom(
     (value: String, { req }) => value === req.body.password
   ),
-  async (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    passport.authenticate('signup', { session: false }, (err, user, info) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.json({
-          username: req.body.username,
-          errors: errors.array(),
-        });
-      }
-      if (err) {
-        return next(err);
-      }
-      res.json({
-        message: 'Signed-up sucessfuly! Please log in to post!',
-        user: req.user,
-      });
-    })(req, res, next);
-  },
 ];
 
-export { signup_post };
+const handleValidationErrors = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+
+const handleSignup = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  passport.authenticate('signup', { session: false }, (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    res.json({
+      message: 'Signed-up sucessfuly! Please log in to post!',
+      user: req.user,
+    });
+  })(req, res, next);
+};
+
+const signup = [...validateSignup, handleValidationErrors, handleSignup];
+
+export default signup;

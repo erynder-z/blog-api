@@ -6,75 +6,93 @@ import Tag from '../models/tag';
 import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
-const show_all_posts = (req: Request, res: Response, next: NextFunction) => {
-  Post.find({ isPublished: true })
-    .sort({
-      timestamp: -1,
-    })
-    .populate('author', 'username')
-    .populate('comments')
-    .populate('tags')
-    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
+const showAllPosts = (req: Request, res: Response, next: NextFunction) => {
+  const query = { isPublished: true };
+  const options = {
+    sort: { timestamp: -1 },
+    populate: [
+      { path: 'author', select: 'username' },
+      { path: 'comments' },
+      { path: 'tags' },
+    ],
+  };
+
+  Post.find(query, null, options).exec(
+    (err: CallbackError, listPosts: IPostModel[] | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: list_posts,
+        post_list: listPosts,
       });
-    });
+    }
+  );
 };
 
-const show_all_posts_admin = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  Post.find({})
-    .sort({
-      timestamp: -1,
-    })
-    .populate('author', 'username')
-    .populate('comments')
-    .populate('tags')
-    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
+const showAllPostsAdmin = (req: Request, res: Response, next: NextFunction) => {
+  const query = {};
+  const options = {
+    sort: { timestamp: -1 },
+    populate: [
+      { path: 'author', select: 'username' },
+      { path: 'comments' },
+      { path: 'tags' },
+    ],
+  };
+
+  Post.find(query, null, options).exec(
+    (err: CallbackError, listPosts: IPostModel[] | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: list_posts,
+        post_list: listPosts,
       });
-    });
+    }
+  );
 };
 
-const show_latest_posts = (req: Request, res: Response, next: NextFunction) => {
+const showLatestPosts = (req: Request, res: Response, next: NextFunction) => {
   const postLimit = 12;
+  const query = { isPublished: true };
+  const options = {
+    sort: { timestamp: -1 },
+    populate: [
+      { path: 'author', select: 'username' },
+      { path: 'comments' },
+      { path: 'tags' },
+    ],
+    limit: postLimit,
+  };
 
-  Post.find({ isPublished: true })
-    .sort({ timestamp: -1 })
-    .populate('author', 'username')
-    .populate('comments')
-    .populate('tags')
-    .limit(postLimit)
-    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
+  Post.find(query, null, options).exec(
+    (err: CallbackError, listPosts: IPostModel[] | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: list_posts,
+        post_list: listPosts,
       });
-    });
+    }
+  );
 };
 
-const show_certain_post = (req: Request, res: Response, next: NextFunction) => {
-  Post.findById(req.params.id)
-    .sort({ timestamp: -1 })
-    .populate('author', 'username')
-    .populate('comments')
-    .populate('tags')
-    .exec(function (err: CallbackError, post: IPostModel | null) {
+const showCertainPost = (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.id;
+  const options = {
+    sort: { timestamp: -1 },
+    populate: [
+      { path: 'author', select: 'username' },
+      { path: 'comments' },
+      { path: 'tags' },
+    ],
+  };
+
+  Post.findById(id, null, options).exec(
+    (err: CallbackError, post: IPostModel | null) => {
       if (err) {
         return next(err);
       }
@@ -82,32 +100,39 @@ const show_certain_post = (req: Request, res: Response, next: NextFunction) => {
       res.status(200).json({
         post: post,
       });
-    });
+    }
+  );
 };
 
-const show_unpublished_posts = (
+const showUnpublishedPosts = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  Post.find({ isPublished: false })
-    .sort({
-      timestamp: -1,
-    })
-    .populate('author', 'username')
-    .populate('comments')
-    .populate('tags')
-    .exec(function (err: CallbackError, list_posts: IPostModel[] | null) {
+  const query = { isPublished: false };
+  const options = {
+    sort: { timestamp: -1 },
+    populate: [
+      { path: 'author', select: 'username' },
+      { path: 'comments' },
+      { path: 'tags' },
+    ],
+  };
+
+  Post.find(query, null, options).exec(
+    (err: CallbackError, listPosts: IPostModel[] | null) => {
       if (err) {
         return next(err);
       }
+
       res.status(200).json({
-        post_list: list_posts,
+        post_list: listPosts,
       });
-    });
+    }
+  );
 };
 
-const create_blogPost_post = [
+const createBlogpostPost = [
   (req: Request, res: Response, next: NextFunction) => {
     if (!Array.isArray(req.body.tag)) {
       req.body.tag = typeof req.body.tag === 'undefined' ? [] : [req.body.tag];
@@ -175,7 +200,7 @@ const create_blogPost_post = [
   },
 ];
 
-const delete_blogPost = (req: Request, res: Response, next: NextFunction) => {
+const deleteBlogpost = (req: Request, res: Response, next: NextFunction) => {
   Post.findById(req.params.id).exec(function (
     err: CallbackError,
     result: IPostModel | null
@@ -293,12 +318,12 @@ const update_blogPost = [
 ];
 
 export {
-  show_all_posts,
-  show_all_posts_admin,
-  show_latest_posts,
-  show_certain_post,
-  show_unpublished_posts,
-  create_blogPost_post,
-  delete_blogPost,
+  showAllPosts,
+  showAllPostsAdmin,
+  showLatestPosts,
+  showCertainPost,
+  showUnpublishedPosts,
+  createBlogpostPost,
+  deleteBlogpost,
   update_blogPost,
 };

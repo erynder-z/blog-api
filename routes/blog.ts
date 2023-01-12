@@ -6,40 +6,40 @@ import * as comment_controller from '../controllers/comment_controller';
 
 export const blogRoute = Router();
 
-blogRoute.get('/api/posts/all', blogPost_controller.show_all_posts);
+blogRoute.get('/api/posts/all', blogPost_controller.showAllPosts);
 
-blogRoute.get('/api/posts/latest', blogPost_controller.show_latest_posts);
+blogRoute.get('/api/posts/latest', blogPost_controller.showLatestPosts);
 
 blogRoute.get(
   '/api/admin/posts/all',
   passport.authenticate('jwt', { session: false }),
-  blogPost_controller.show_all_posts_admin
+  blogPost_controller.showAllPostsAdmin
 );
 
 blogRoute.get(
   '/api/admin/posts/published',
   passport.authenticate('jwt', { session: false }),
-  blogPost_controller.show_all_posts
+  blogPost_controller.showAllPosts
 );
 
 blogRoute.get(
   '/api/admin/posts/unpublished',
   passport.authenticate('jwt', { session: false }),
-  blogPost_controller.show_unpublished_posts
+  blogPost_controller.showUnpublishedPosts
 );
 
-blogRoute.get('/api/posts/:id', blogPost_controller.show_certain_post);
+blogRoute.get('/api/posts/:id', blogPost_controller.showCertainPost);
 
 blogRoute.post(
   '/api/posts',
   passport.authenticate('jwt', { session: false }),
-  blogPost_controller.create_blogPost_post
+  blogPost_controller.createBlogpostPost
 );
 
 blogRoute.delete(
   '/api/posts/:id',
   passport.authenticate('jwt', { session: false }),
-  blogPost_controller.delete_blogPost
+  blogPost_controller.deleteBlogpost
 );
 
 blogRoute.put(
@@ -48,16 +48,16 @@ blogRoute.put(
   blogPost_controller.update_blogPost
 );
 
-blogRoute.post('/api/posts/:id/comment', comment_controller.create_comment);
+blogRoute.post('/api/posts/:id/comment', comment_controller.createComment);
 
 blogRoute.delete(
   '/api/posts/:id/comment',
   passport.authenticate('jwt', { session: false }),
-  comment_controller.delete_comment
+  comment_controller.deleteComment
 );
 
 blogRoute.put(
   '/api/posts/:id/comment',
   passport.authenticate('jwt', { session: false }),
-  comment_controller.edit_comment
+  comment_controller.editComment
 );

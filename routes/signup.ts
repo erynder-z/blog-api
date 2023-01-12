@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { signup_post } from '../controllers/signup_controller';
+import signup from '../controllers/signup_controller';
 
 export const signupRoute = Router();
 
-signupRoute.post('/api/signup', signup_post);
+signupRoute.post('/api/signup', signup);

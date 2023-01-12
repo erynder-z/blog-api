@@ -5,24 +5,24 @@ import * as tag_controller from '../controllers/tag_controller';
 
 export const tagRoute = Router();
 
-tagRoute.get('/api/tags', tag_controller.show_all_tags);
+tagRoute.get('/api/tags', tag_controller.showAllTags);
 
-tagRoute.get('/api/tags/:id', tag_controller.show_tag_detail);
+tagRoute.get('/api/tags/:id', tag_controller.showTagDetail);
 
 tagRoute.post(
   '/api/admin/tags',
   passport.authenticate('jwt', { session: false }),
-  tag_controller.create_tag
+  tag_controller.createTag
 );
 
 tagRoute.delete(
   '/api/admin/tags/:id',
   passport.authenticate('jwt', { session: false }),
-  tag_controller.delete_tag
+  tag_controller.deleteTag
 );
 
 tagRoute.put(
   '/api/admin/tags/:id',
   passport.authenticate('jwt', { session: false }),
-  tag_controller.update_tag
+  tag_controller.updateTag
 );
