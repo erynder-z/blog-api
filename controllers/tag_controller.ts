@@ -91,38 +91,22 @@ const create_tag = [
 ];
 
 const delete_tag = (req: Request, res: Response, next: NextFunction) => {
-  async.parallel(
-    {
-      tag(callback) {
-        Tag.findById(req.body.tagid).exec(callback);
-      },
-      tag_posts(callback) {
-        Post.find({ genre: req.body.genreid }).exec(callback);
-      },
-    },
-    (err: Error | undefined, results: async.Dictionary<any>) => {
-      if (err) {
-        return next(err);
+  Tag.findById(req.params.id)
+    .then((tag) => {
+      if (!tag) {
+        return Promise.reject(new Error('Tag not found'));
       }
-
-      if (results.tag_posts.length > 0) {
-        res.status(400).json({});
-        res.status(400).json({
-          title: `Unable to delete! Posts tagged with ${results.tag}`,
-          tag: results.tag,
-          tag_posts: results.tag_posts,
-        });
-        return;
+      return Tag.findByIdAndRemove(req.params.id);
+    })
+    .then(() => {
+      res.status(200).json({ title: 'Tag deleted!' });
+    })
+    .catch((error: Error) => {
+      if (error.message === 'Tag not found') {
+        return res.status(404).json({ title: 'Tag not found' });
       }
-
-      Tag.findByIdAndRemove(req.body.tagid, (err: CallbackError) => {
-        if (err) {
-          return next(err);
-        }
-        res.status(200).json({ title: 'Tag deleted!' });
-      });
-    }
-  );
+      next(error);
+    });
 };
 
 const update_tag = [
