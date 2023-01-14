@@ -148,11 +148,10 @@ const createBlogpostPost = [
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
-
     const post = new Post({
       author: req.user,
       title: req.body.title,
-      text: req.body.text,
+      content: req.body.text,
       timestamp: Date.now(),
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments: [],
@@ -248,12 +247,8 @@ const update_blogPost = [
       _id: req.params.id,
       author: req.body.author,
       title: req.body.title,
-      text: req.body.text,
+      content: req.body.text,
       timestamp: req.body.timestamp,
-      image: {
-        data: req.file?.buffer,
-        contentType: req.file?.mimetype,
-      },
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments:
         typeof req.body.comments === 'undefined' ? [] : req.body.comments,
