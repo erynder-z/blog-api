@@ -6,12 +6,10 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('login', async (err, user, info) => {
     try {
       if (err || !user) {
-        return next(err.message);
+        return next(new Error(info.message));
       }
-
       req.login(user, { session: false }, async (error) => {
         if (error) return next(error);
-
         const body = { _id: user._id, username: user.username };
         const token = jwt.sign(
           { user: body },
@@ -20,7 +18,6 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
             expiresIn: `${process.env.TOKEN_EXPIRE_TIME}`,
           }
         );
-
         return res.json({
           token,
           body,
@@ -33,23 +30,31 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const check_token = async (req: Request, res: Response, next: NextFunction) => {
-  const bearerHeader = req.headers['authorization'];
-  if (typeof bearerHeader !== 'undefined') {
+  try {
+    const bearerHeader = req.headers['authorization'];
+    if (!bearerHeader) {
+      return next(new Error('Authorization header is missing'));
+    }
+
     const bearer = bearerHeader.split(' ');
+    if (bearer.length !== 2 || bearer[0] !== 'Bearer') {
+      return next(new Error('Authorization header is malformed'));
+    }
+
     const token = bearer[1];
+    if (!token) {
+      return next(new Error('Token is missing'));
+    }
 
     const secret = process.env.TOKEN_SECRET_KEY as string;
-
-    try {
-      const decoded = jwt.verify(token, secret);
-      if (typeof decoded === 'object') {
-        res.status(200).json({ user: decoded.user });
-      } else {
-        res.status(401);
-      }
-    } catch (error) {
-      console.log(error);
+    const decoded = jwt.verify(token, secret);
+    if (!decoded || typeof decoded !== 'object') {
+      return next(new Error('Token is invalid'));
     }
+
+    res.status(200).json({ user: decoded.user });
+  } catch (error) {
+    next(error);
   }
 };
 
