@@ -30,8 +30,6 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
       return next(error);
     }
   })(req, res, next);
-
-  // TODO: LOGOUT
 };
 
 const check_token = async (req: Request, res: Response, next: NextFunction) => {

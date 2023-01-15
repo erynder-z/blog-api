@@ -1,6 +1,6 @@
 import express, { Express, Request, Response } from 'express';
 import { Router } from 'express';
-import { login_post, check_token } from '../controllers/login_controller';
+import { login_post, check_token } from '../controllers/auth_controller';
 
 export const authRoute = Router();
 
