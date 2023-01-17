@@ -143,7 +143,10 @@ const createBlogpostPost = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body('text', 'Text must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('content', 'Text must not be empty.')
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
   body('tags.*').escape(),
 
   (req: Request, res: Response, next: NextFunction) => {
@@ -151,7 +154,7 @@ const createBlogpostPost = [
     const post = new Post({
       author: req.user,
       title: req.body.title,
-      content: req.body.text,
+      content: req.body.content,
       timestamp: Date.now(),
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments: [],
@@ -236,7 +239,10 @@ const update_blogPost = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body('text', 'Text must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('content', 'Text must not be empty.')
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
   body('tags.*').escape(),
   body('comments.*').escape(),
 
@@ -247,7 +253,7 @@ const update_blogPost = [
       _id: req.params.id,
       author: req.body.author,
       title: req.body.title,
-      content: req.body.text,
+      content: req.body.content,
       timestamp: req.body.timestamp,
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments:
