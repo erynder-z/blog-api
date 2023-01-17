@@ -267,9 +267,6 @@ const update_blogPost = [
           tags(callback) {
             Tag.find(callback);
           },
-          comments(callback) {
-            Comment.find(callback);
-          },
         },
         (err: Error | undefined, results: async.Dictionary<any>) => {
           if (err) {
@@ -279,12 +276,6 @@ const update_blogPost = [
           for (const tag of results.tags) {
             if (post.tags.includes(tag._id)) {
               tag.checked = 'true';
-            }
-          }
-
-          for (const comment of results.comments) {
-            if (post.comments.includes(comment._id)) {
-              comment.checked = 'true';
             }
           }
 
@@ -300,11 +291,10 @@ const update_blogPost = [
       return;
     }
 
-    Post.findByIdAndUpdate(
-      req.params.id,
+    Post.findOneAndUpdate(
+      { _id: req.params.id },
       post,
-      {},
-      (err: CallbackError, thePost: IPostModel | null) => {
+      (err: CallbackError) => {
         if (err) {
           return next(err);
         }
