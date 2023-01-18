@@ -1,6 +1,6 @@
 import mongoose, { Schema, Types, Document } from 'mongoose';
 
-export interface IPost {
+export interface IArticle {
   author: Types.ObjectId;
   title: string;
   content: string;
@@ -10,9 +10,9 @@ export interface IPost {
   isPublished: boolean;
 }
 
-export interface IPostModel extends IPost, Document {}
+export interface IArticleModel extends IArticle, Document {}
 
-const PostSchema: Schema = new Schema(
+const ArticleSchema: Schema = new Schema(
   {
     author: { type: Schema.Types.ObjectId, ref: 'Author', required: true },
     title: { type: String, required: true },
@@ -27,4 +27,4 @@ const PostSchema: Schema = new Schema(
   { versionKey: false }
 );
 
-export default mongoose.model<IPostModel>('Post', PostSchema);
+export default mongoose.model<IArticleModel>('Article', ArticleSchema);

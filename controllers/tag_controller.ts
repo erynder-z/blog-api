@@ -1,7 +1,7 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import async from 'async';
-import Post, { IPostModel } from '../models/post';
+import Article, { IArticleModel } from '../models/article';
 import Tag, { ITagModel } from '../models/tag';
 import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
@@ -27,11 +27,11 @@ const showTagDetail = async (
     if (!tag) {
       return res.status(404).json({ message: 'Tag not found' });
     }
-    const tagPosts = await Post.find({ tag: req.params.id });
+    const tagArticles = await Article.find({ tag: req.params.id });
     res.status(200).json({
-      title: `Posts tagged with ${tag.name}`,
+      title: `Articles tagged with ${tag.name}`,
       tag,
-      tag_posts: tagPosts,
+      tag_posts: tagArticles,
     });
   } catch (err) {
     next(err);

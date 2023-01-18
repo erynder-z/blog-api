@@ -2,7 +2,7 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { CallbackError } from 'mongoose';
 import Comment, { ICommentModel } from '../models/comment';
-import Post, { IPostModel } from '../models/post';
+import Article, { IArticleModel } from '../models/article';
 
 const createComment = [
   body('author', 'Username must not be empty.')
@@ -20,14 +20,14 @@ const createComment = [
       });
     }
 
-    const parentPostId = req.params.id;
-    const post = await Post.findById(parentPostId);
+    const parentArticleId = req.params.id;
+    const post = await Article.findById(parentArticleId);
     if (!post) {
-      return res.status(404).json({ title: 'Post not found' });
+      return res.status(404).json({ title: 'Article not found' });
     }
 
     const comment = new Comment({
-      parentPost: parentPostId,
+      parentArticle: parentArticleId,
       author: req.body.author,
       text: req.body.text,
       timestamp: Date.now(),
@@ -47,6 +47,7 @@ const createComment = [
     }
   },
 ];
+
 const deleteComment = async (
   req: Request,
   res: Response,
@@ -57,10 +58,10 @@ const deleteComment = async (
     if (!comment) {
       return res.status(404).json({ title: 'Comment not found' });
     }
-    const parentPostId = comment.parentPost;
+    const parentArticleId = comment.parentArticle;
 
     await Comment.findByIdAndRemove(comment._id);
-    await Post.findByIdAndUpdate(parentPostId, {
+    await Article.findByIdAndUpdate(parentArticleId, {
       $pull: { comments: comment._id },
     });
 

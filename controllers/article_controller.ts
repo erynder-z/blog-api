@@ -1,12 +1,12 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import async from 'async';
-import Post, { IPostModel } from '../models/post';
+import Article, { IArticleModel } from '../models/article';
 import Tag from '../models/tag';
 import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
-const showAllPosts = (req: Request, res: Response, next: NextFunction) => {
+const showAllArticles = (req: Request, res: Response, next: NextFunction) => {
   const query = { isPublished: true };
   const options = {
     sort: { timestamp: -1 },
@@ -17,20 +17,24 @@ const showAllPosts = (req: Request, res: Response, next: NextFunction) => {
     ],
   };
 
-  Post.find(query, null, options).exec(
-    (err: CallbackError, listPosts: IPostModel[] | null) => {
+  Article.find(query, null, options).exec(
+    (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: listPosts,
+        article_list: listArticles,
       });
     }
   );
 };
 
-const showAllPostsAdmin = (req: Request, res: Response, next: NextFunction) => {
+const showAllArticlesAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const query = {};
   const options = {
     sort: { timestamp: -1 },
@@ -41,21 +45,25 @@ const showAllPostsAdmin = (req: Request, res: Response, next: NextFunction) => {
     ],
   };
 
-  Post.find(query, null, options).exec(
-    (err: CallbackError, listPosts: IPostModel[] | null) => {
+  Article.find(query, null, options).exec(
+    (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: listPosts,
+        article_list: listArticles,
       });
     }
   );
 };
 
-const showLatestPosts = (req: Request, res: Response, next: NextFunction) => {
-  const postLimit = 12;
+const showLatestArticles = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const articleLimit = 12;
   const query = { isPublished: true };
   const options = {
     sort: { timestamp: -1 },
@@ -64,23 +72,27 @@ const showLatestPosts = (req: Request, res: Response, next: NextFunction) => {
       { path: 'comments' },
       { path: 'tags' },
     ],
-    limit: postLimit,
+    limit: articleLimit,
   };
 
-  Post.find(query, null, options).exec(
-    (err: CallbackError, listPosts: IPostModel[] | null) => {
+  Article.find(query, null, options).exec(
+    (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: listPosts,
+        article_list: listArticles,
       });
     }
   );
 };
 
-const showCertainPost = (req: Request, res: Response, next: NextFunction) => {
+const showCertainArticle = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const id = req.params.id;
   const options = {
     sort: { timestamp: -1 },
@@ -91,20 +103,20 @@ const showCertainPost = (req: Request, res: Response, next: NextFunction) => {
     ],
   };
 
-  Post.findById(id, null, options).exec(
-    (err: CallbackError, post: IPostModel | null) => {
+  Article.findById(id, null, options).exec(
+    (err: CallbackError, article: IArticleModel | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post: post,
+        article: article,
       });
     }
   );
 };
 
-const showUnpublishedPosts = (
+const showUnpublishedArticles = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -119,20 +131,20 @@ const showUnpublishedPosts = (
     ],
   };
 
-  Post.find(query, null, options).exec(
-    (err: CallbackError, listPosts: IPostModel[] | null) => {
+  Article.find(query, null, options).exec(
+    (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        post_list: listPosts,
+        article_list: listArticles,
       });
     }
   );
 };
 
-const createBlogpostPost = [
+const createArticle = [
   (req: Request, res: Response, next: NextFunction) => {
     if (!Array.isArray(req.body.tag)) {
       req.body.tag = typeof req.body.tag === 'undefined' ? [] : [req.body.tag];
@@ -151,14 +163,14 @@ const createBlogpostPost = [
 
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
-    const post = new Post({
+    const article = new Article({
       author: req.user,
       title: req.body.title,
       content: req.body.content,
       timestamp: Date.now(),
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments: [],
-      isPublished: req.body.publishPost === 'on' ? true : false,
+      isPublished: req.body.publishArticle === 'on' ? true : false,
     });
 
     if (!errors.isEmpty()) {
@@ -174,52 +186,52 @@ const createBlogpostPost = [
           }
 
           for (const tag of results.tags) {
-            if (post.tags.includes(tag._id)) {
+            if (article.tags.includes(tag._id)) {
               tag.checked = 'true';
             }
           }
           res.status(400).json({
-            title: 'Failed to save post!',
+            title: 'Failed to save article!',
             tags: results.tags,
             errors: errors.array(),
-            post,
+            article,
           });
         }
       );
       return;
     }
 
-    post.save((err) => {
+    article.save((err) => {
       if (err) {
         return next(err);
       }
 
       res.status(200).json({
-        title: 'Post saved successfully!',
-        post,
+        title: 'Article saved successfully!',
+        article,
       });
     });
   },
 ];
 
-const deleteBlogpost = (req: Request, res: Response, next: NextFunction) => {
-  Post.findById(req.params.id).exec(function (
+const deleteArticle = (req: Request, res: Response, next: NextFunction) => {
+  Article.findById(req.params.id).exec(function (
     err: CallbackError,
-    result: IPostModel | null
+    result: IArticleModel | null
   ) {
     if (err) {
       return next(err);
     }
-    Post.findByIdAndRemove(result?._id, (err: CallbackError) => {
+    Article.findByIdAndRemove(result?._id, (err: CallbackError) => {
       if (err) {
         return next(err);
       }
-      res.status(200).json({ title: 'Post deleted!' });
+      res.status(200).json({ title: 'Article deleted!' });
     });
   });
 };
 
-const update_blogPost = [
+const update_article = [
   (req: Request, res: Response, next: NextFunction) => {
     if (!Array.isArray(req.body.tags)) {
       req.body.tags =
@@ -249,7 +261,7 @@ const update_blogPost = [
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
 
-    const post = new Post({
+    const article = new Article({
       _id: req.params.id,
       author: req.body.author,
       title: req.body.title,
@@ -258,7 +270,7 @@ const update_blogPost = [
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments:
         typeof req.body.comments === 'undefined' ? [] : req.body.comments,
-      isPublished: req.body.isPublished,
+      isPublished: req.body.isPublished === 'on' ? true : false,
     });
 
     if (!errors.isEmpty()) {
@@ -274,34 +286,34 @@ const update_blogPost = [
           }
 
           for (const tag of results.tags) {
-            if (post.tags.includes(tag._id)) {
+            if (article.tags.includes(tag._id)) {
               tag.checked = 'true';
             }
           }
 
           res.status(400).json({
-            title: 'Failed to update post!',
+            title: 'Failed to update article!',
             tags: results.tags,
             comments: results.comments,
             errors: errors.array(),
-            post,
+            article,
           });
         }
       );
       return;
     }
 
-    Post.findOneAndUpdate(
+    Article.findOneAndUpdate(
       { _id: req.params.id },
-      post,
+      article,
       (err: CallbackError) => {
         if (err) {
           return next(err);
         }
 
         res.status(200).json({
-          title: 'Post updated successfully!',
-          post,
+          title: 'Article updated successfully!',
+          article,
         });
       }
     );
@@ -309,12 +321,12 @@ const update_blogPost = [
 ];
 
 export {
-  showAllPosts,
-  showAllPostsAdmin,
-  showLatestPosts,
-  showCertainPost,
-  showUnpublishedPosts,
-  createBlogpostPost,
-  deleteBlogpost,
-  update_blogPost,
+  showAllArticles,
+  showAllArticlesAdmin,
+  showLatestArticles,
+  showCertainArticle,
+  showUnpublishedArticles,
+  createArticle,
+  deleteArticle,
+  update_article,
 };
