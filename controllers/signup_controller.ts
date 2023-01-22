@@ -10,8 +10,10 @@ const validateSignup = [
     .escape()
     .custom(async (username: string) => {
       try {
-        if (!/^[a-zA-Z0-9]+$/.test(username)) {
-          throw new Error('Username must be alphanumeric.');
+        if (!/^[a-zA-Z0-9-]+$/.test(username)) {
+          throw new Error(
+            'Username must be alphanumeric and can contain hyphens.'
+          );
         }
         const alreadyExistingUsername = await Author.findOne({
           username: username,
