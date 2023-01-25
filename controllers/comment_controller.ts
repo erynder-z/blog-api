@@ -3,6 +3,12 @@ import { body, validationResult } from 'express-validator';
 import { CallbackError } from 'mongoose';
 import Comment, { ICommentModel } from '../models/comment';
 import Article, { IArticleModel } from '../models/article';
+import Filter from 'bad-words';
+
+const filter = new Filter();
+
+const badwordsArray = require('badwords/array');
+filter.addWords(...badwordsArray);
 
 const createComment = [
   body('author', 'Username must not be empty.')
@@ -28,8 +34,8 @@ const createComment = [
 
     const comment = new Comment({
       parentArticle: parentArticleId,
-      author: req.body.author,
-      text: req.body.text,
+      author: filter.clean(req.body.author),
+      text: filter.clean(req.body.text),
       timestamp: Date.now(),
     });
 
