@@ -1,9 +1,8 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import async from 'async';
 import Article, { IArticleModel } from '../models/article';
 import Tag from '../models/tag';
-import Comment from '../models/comment';
 import { CallbackError } from 'mongoose';
 
 const showAllArticles = (req: Request, res: Response, next: NextFunction) => {

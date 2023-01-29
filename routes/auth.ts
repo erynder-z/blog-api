@@ -1,4 +1,3 @@
-import express, { Express, Request, Response } from 'express';
 import { Router } from 'express';
 import { login_post, check_token } from '../controllers/auth_controller';
 

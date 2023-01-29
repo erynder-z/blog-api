@@ -1,4 +1,4 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
 
@@ -6,10 +6,10 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('login', async (err, user, info) => {
     try {
       if (err || !user) {
-        return next(new Error(info.message));
+        return next(new Error('Authentication failed: ' + info.message));
       }
       req.login(user, { session: false }, async (error) => {
-        if (error) return next(error);
+        if (error) return next(new Error('Error while logging in: ' + error));
         const body = { _id: user._id, username: user.username };
         const token = jwt.sign(
           { user: body },
@@ -24,7 +24,7 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
         });
       });
     } catch (error) {
-      return next(error);
+      return next(new Error('Error while authenticating: ' + error));
     }
   })(req, res, next);
 };
@@ -54,7 +54,7 @@ const check_token = async (req: Request, res: Response, next: NextFunction) => {
 
     res.status(200).json({ user: decoded.user });
   } catch (error) {
-    next(error);
+    next(new Error('Error while checking token: ' + error));
   }
 };
 

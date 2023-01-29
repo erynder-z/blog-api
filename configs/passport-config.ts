@@ -2,7 +2,7 @@ import passport from 'passport';
 import { Strategy as localStrategy } from 'passport-local';
 import { Strategy as JWTstrategy, ExtractJwt } from 'passport-jwt';
 import bcrypt from 'bcrypt';
-import Author from './models/author';
+import Author from '../models/author';
 
 export const initializePassport = () => {
   // Use the JWT strategy to authenticate users based on a JWT

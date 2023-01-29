@@ -1,4 +1,3 @@
-import express, { Express, Request, Response } from 'express';
 import { Router } from 'express';
 import passport from 'passport';
 import * as tag_controller from '../controllers/tag_controller';
@@ -6,8 +5,6 @@ import * as tag_controller from '../controllers/tag_controller';
 export const tagRoute = Router();
 
 tagRoute.get('/api/tags', tag_controller.showAllTags);
-
-tagRoute.get('/api/tags/:id', tag_controller.showTagDetail);
 
 tagRoute.post(
   '/api/admin/tags',

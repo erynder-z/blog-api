@@ -1,37 +1,13 @@
-import express, { Express, NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
-import async from 'async';
-import Article, { IArticleModel } from '../models/article';
-import Tag, { ITagModel } from '../models/tag';
-import Comment from '../models/comment';
-import { CallbackError } from 'mongoose';
+import Article from '../models/article';
+import Tag from '../models/tag';
 
 const showAllTags = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const listTags = await Tag.find({}).sort('tag');
     res.status(200).json({
       tag_list: listTags,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-const showTagDetail = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const tag = await Tag.findById(req.params.id);
-    if (!tag) {
-      return res.status(404).json({ message: 'Tag not found' });
-    }
-    const tagArticles = await Article.find({ tag: req.params.id });
-    res.status(200).json({
-      title: `Articles tagged with ${tag.name}`,
-      tag,
-      tag_posts: tagArticles,
     });
   } catch (err) {
     next(err);

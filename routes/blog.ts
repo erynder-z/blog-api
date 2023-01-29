@@ -1,4 +1,3 @@
-import express, { Express, Request, Response } from 'express';
 import { Router } from 'express';
 import passport from 'passport';
 import * as article_controller from '../controllers/article_controller';
@@ -54,10 +53,4 @@ blogRoute.delete(
   '/api/articles/:id/comment',
   passport.authenticate('jwt', { session: false }),
   comment_controller.deleteComment
-);
-
-blogRoute.put(
-  '/api/articles/:id/comment',
-  passport.authenticate('jwt', { session: false }),
-  comment_controller.editComment
 );

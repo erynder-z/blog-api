@@ -1,5 +1,5 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import createError from 'http-errors';
 import * as bodyParser from 'body-parser';
@@ -10,17 +10,14 @@ import cors from 'cors';
 import { routes } from './routes';
 import errorMiddleware from './middleware/error.middleware';
 import passport from 'passport';
-import { initializePassport } from './passport-config';
+import { initializePassport } from './configs/passport-config';
+import { initializeMongoDB } from './configs/mongodb';
 
 const app: Express = express();
 dotenv.config();
 
-const mongoDB = `${process.env.MONGODB_URI}`;
-
-mongoose.set('strictQuery', false);
-mongoose.connect(mongoDB);
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+initializeMongoDB();
+initializePassport();
 
 app.use(cors());
 /* app.use(cors({
@@ -33,8 +30,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-initializePassport();
 
 app.use('/', routes);
 
