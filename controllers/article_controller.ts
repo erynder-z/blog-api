@@ -169,7 +169,7 @@ const createArticle = [
       timestamp: Date.now(),
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments: [],
-      isPublished: req.body.publishArticle === 'on' ? true : false,
+      isPublished: req.body.isPublished,
     });
 
     if (!errors.isEmpty()) {
