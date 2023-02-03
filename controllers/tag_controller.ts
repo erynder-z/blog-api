@@ -88,4 +88,4 @@ const updateTag = [
   },
 ];
 
-export { showAllTags, showTagDetail, createTag, deleteTag, updateTag };
+export { showAllTags, createTag, deleteTag, updateTag };
