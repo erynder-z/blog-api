@@ -19,7 +19,11 @@ const showAllArticles = (req: Request, res: Response, next: NextFunction) => {
   Article.find(query, null, options).exec(
     (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
-        return next(err);
+        return next();
+      }
+
+      if (!listArticles) {
+        res.status(404).json({ message: 'No articles found' });
       }
 
       res.status(200).json({
@@ -47,7 +51,11 @@ const showAllArticlesAdmin = (
   Article.find(query, null, options).exec(
     (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
-        return next(err);
+        return next();
+      }
+
+      if (!listArticles) {
+        res.status(404).json({ message: 'No articles found' });
       }
 
       res.status(200).json({
@@ -77,7 +85,11 @@ const showLatestArticles = (
   Article.find(query, null, options).exec(
     (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
-        return next(err);
+        return next();
+      }
+
+      if (!listArticles) {
+        res.status(404).json({ message: 'No articles found' });
       }
 
       res.status(200).json({
@@ -105,7 +117,11 @@ const showCertainArticle = (
   Article.findById(id, null, options).exec(
     (err: CallbackError, article: IArticleModel | null) => {
       if (err) {
-        return next(err);
+        return next();
+      }
+
+      if (!article) {
+        res.status(404).json({ message: 'Article not found' });
       }
 
       res.status(200).json({
@@ -133,7 +149,11 @@ const showUnpublishedArticles = (
   Article.find(query, null, options).exec(
     (err: CallbackError, listArticles: IArticleModel[] | null) => {
       if (err) {
-        return next(err);
+        return next();
+      }
+
+      if (!listArticles) {
+        res.status(404).json({ message: 'No articles found' });
       }
 
       res.status(200).json({
