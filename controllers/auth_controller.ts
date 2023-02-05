@@ -6,10 +6,11 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('login', async (err, user, info) => {
     try {
       if (err || !user) {
-        return next(new Error('Authentication failed: ' + info.message));
+        return res.status(400).json({ error: 'Authentication failed' });
       }
       req.login(user, { session: false }, async (error) => {
-        if (error) return next(new Error('Error while logging in: ' + error));
+        if (error)
+          return res.status(400).json({ error: 'Error while logging in' });
         const body = { _id: user._id, username: user.username };
         const token = jwt.sign(
           { user: body },
@@ -24,7 +25,7 @@ const login_post = async (req: Request, res: Response, next: NextFunction) => {
         });
       });
     } catch (error) {
-      return next(new Error('Error while authenticating: ' + error));
+      return res.status(400).json({ error: 'Error while authenticating' });
     }
   })(req, res, next);
 };
@@ -33,28 +34,30 @@ const check_token = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const bearerHeader = req.headers['authorization'];
     if (!bearerHeader) {
-      return next(new Error('Authorization header is missing'));
+      return res.status(400).json({ error: 'Authorization header is missing' });
     }
 
     const bearer = bearerHeader.split(' ');
     if (bearer.length !== 2 || bearer[0] !== 'Bearer') {
-      return next(new Error('Authorization header is malformed'));
+      return res
+        .status(400)
+        .json({ error: 'Authorization header is malformed' });
     }
 
     const token = bearer[1];
     if (!token) {
-      return next(new Error('Token is missing'));
+      return res.status(400).json({ error: 'Token is missing' });
     }
 
     const secret = process.env.TOKEN_SECRET_KEY as string;
     const decoded = jwt.verify(token, secret);
     if (!decoded || typeof decoded !== 'object') {
-      return next(new Error('Token is invalid'));
+      return res.status(400).json({ error: 'Token is invalid' });
     }
 
     res.status(200).json({ user: decoded.user });
   } catch (error) {
-    next(new Error('Error while checking token: ' + error));
+    return res.status(400).json({ error: 'Error while checking token' });
   }
 };
 
