@@ -131,6 +131,29 @@ const showCertainArticle = (
   );
 };
 
+const getRandomArticleId = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  Article.aggregate([
+    { $match: { isPublished: true } },
+    { $sample: { size: 1 } },
+  ]).exec((err: CallbackError, article: IArticleModel[]) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!article.length) {
+      return res.status(404).json({ message: 'No published article found' });
+    }
+
+    return res.status(200).json({
+      articleId: article[0]._id,
+    });
+  });
+};
+
 const showUnpublishedArticles = (
   req: Request,
   res: Response,
@@ -344,6 +367,7 @@ export {
   showAllArticlesAdmin,
   showLatestArticles,
   showCertainArticle,
+  getRandomArticleId,
   showUnpublishedArticles,
   createArticle,
   deleteArticle,

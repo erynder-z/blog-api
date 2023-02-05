@@ -29,6 +29,8 @@ blogRoute.get(
 
 blogRoute.get('/api/articles/:id', article_controller.showCertainArticle);
 
+blogRoute.get('/api/articles/random', article_controller.getRandomArticleId);
+
 blogRoute.post(
   '/api/articles',
   passport.authenticate('jwt', { session: false }),
