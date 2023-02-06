@@ -32,19 +32,19 @@ blogRoute.get('/api/articles/:id', article_controller.showCertainArticle);
 blogRoute.get('/api/articles/random', article_controller.getRandomArticleId);
 
 blogRoute.post(
-  '/api/articles',
+  '/api/admin/articles',
   passport.authenticate('jwt', { session: false }),
   article_controller.createArticle
 );
 
 blogRoute.delete(
-  '/api/articles/:id',
+  '/api/admin/articles/:id',
   passport.authenticate('jwt', { session: false }),
   article_controller.deleteArticle
 );
 
 blogRoute.put(
-  '/api/articles/:id',
+  '/api/admin/articles/:id',
   passport.authenticate('jwt', { session: false }),
   article_controller.update_article
 );
@@ -52,7 +52,7 @@ blogRoute.put(
 blogRoute.post('/api/articles/:id/comment', comment_controller.createComment);
 
 blogRoute.delete(
-  '/api/articles/:id/comment',
+  '/api/admin/articles/:id/comment',
   passport.authenticate('jwt', { session: false }),
   comment_controller.deleteComment
 );
