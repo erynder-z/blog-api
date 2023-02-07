@@ -1,5 +1,4 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 import createError from 'http-errors';
 import * as bodyParser from 'body-parser';
@@ -7,6 +6,8 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
 import { routes } from './routes';
 import errorMiddleware from './middleware/error.middleware';
 import passport from 'passport';
@@ -30,6 +31,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(helmet());
+app.use(compression());
 
 app.use('/', routes);
 
