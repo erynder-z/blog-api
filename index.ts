@@ -20,11 +20,17 @@ dotenv.config();
 initializeMongoDB();
 initializePassport();
 
-app.use(
-  cors({
-    origin: process.env.CORS_ACCESS,
-  })
-);
+const corsOptions = {
+  origin: function (origin: any, callback: any) {
+    if (process.env.CORS_ACCESS?.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(logger('dev'));
