@@ -41,7 +41,7 @@ A RESTful API that provides a convenient and secure way to access and manage you
 
 ## Usage
 
-1.  Setup .env ("PORT=<yourPort>", "MONGODB_URI=<DB_connection_string>", "TOKEN_EXPIRE_TIME=<time>", "TOKEN_SECRET_KEY=<secret_key_for_JWT_authentication>" )
+1.  Setup .env (`PORT=<yourPort>`, `MONGODB_URI=<DB_connection_string>`, `TOKEN_EXPIRE_TIME=<time>`, `TOKEN_SECRET_KEY=<secret_key_for_JWT_authentication>`, `SIGNUP_SECRET=<secret_key_for_signup_authentication>` )
 2.  Make HTTP requests to the API endpoints using your preferred tool or library (e.g., `curl`, `httpie`, `Postman`, etc.).
 3.  Authenticate your requests as necessary using JSON Web Tokens.
 4.  Retrieve, create, update, and delete data as desired.
