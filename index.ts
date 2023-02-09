@@ -20,10 +20,11 @@ dotenv.config();
 initializeMongoDB();
 initializePassport();
 
-app.use(cors());
-/* app.use(cors({
-  origin: ['http://localhost:3000', 'http://example.com']
-})); */
+app.use(
+  cors({
+    origin: `${process.env.CORS_ACCESS}`,
+  })
+);
 app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(logger('dev'));
