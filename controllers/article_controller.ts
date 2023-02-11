@@ -308,7 +308,6 @@ const update_article = [
       author: req.body.author,
       title: req.body.title,
       content: req.body.content,
-      timestamp: req.body.timestamp,
       tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
       comments:
         typeof req.body.comments === 'undefined' ? [] : req.body.comments,
@@ -347,7 +346,17 @@ const update_article = [
 
     Article.findOneAndUpdate(
       { _id: req.params.id },
-      article,
+      {
+        $set: {
+          author: article.author,
+          title: article.title,
+          content: article.content,
+          tags: article.tags,
+          comments: article.comments,
+          isPublished: article.isPublished,
+        },
+      },
+      { new: true, omitUndefined: true, runValidators: true },
       (err: CallbackError) => {
         if (err) {
           return next(err);
