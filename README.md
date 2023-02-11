@@ -9,6 +9,14 @@ A RESTful API that provides a convenient and secure way to access and manage you
 - Authentication and authorization to ensure that only authorized users have access to your data.
 - Robust error handling and validation to ensure that your data is accurate and secure.
 
+## Content Management System
+
+The blog can be managed from a self-coded content management system. The source code for the CMS can be found at [https://github.com/erynder-z/code-blog-admin](https://github.com/erynder-z/code-blog-admin).
+
+## Client
+
+The source code for the blog-client frontend can be found at [https://github.com/erynder-z/code-blog](https://github.com/erynder-z/code-blog).
+
 ## Endpoints
 
 | Endpoint                    | Method | Description                                    |
