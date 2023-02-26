@@ -275,17 +275,18 @@ const deleteArticle = (req: Request, res: Response, next: NextFunction) => {
 
 const update_article = [
   (req: Request, res: Response, next: NextFunction) => {
-    if (!Array.isArray(req.body.tags)) {
-      req.body.tags =
-        typeof req.body.tags === 'undefined' ? [] : [req.body.tags];
-    }
-    next();
-  },
-  (req: Request, res: Response, next: NextFunction) => {
-    if (!Array.isArray(req.body.comments)) {
-      req.body.comments =
-        typeof req.body.comments === 'undefined' ? [] : [req.body.comments];
-    }
+    req.body.tags = Array.isArray(req.body.tags)
+      ? req.body.tags
+      : req.body.tags
+      ? [req.body.tags]
+      : [];
+
+    req.body.comments = Array.isArray(req.body.comments)
+      ? req.body.comments
+      : req.body.comments
+      ? [req.body.comments]
+      : [];
+
     next();
   },
 
@@ -303,15 +304,14 @@ const update_article = [
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
 
-    const article = new Article({
+    const reqArticle = new Article({
       _id: req.params.id,
       author: req.body.author,
       title: req.body.title,
       content: req.body.content,
-      tags: typeof req.body.tags === 'undefined' ? [] : req.body.tags,
-      comments:
-        typeof req.body.comments === 'undefined' ? [] : req.body.comments,
-      isPublished: req.body.isPublished === 'on' ? true : false,
+      tags: req.body.tags ?? [],
+      comments: req.body.comments ?? [],
+      isPublished: req.body.isPublished === 'on',
     });
 
     if (!errors.isEmpty()) {
@@ -327,7 +327,7 @@ const update_article = [
           }
 
           for (const tag of results.tags) {
-            if (article.tags.includes(tag._id)) {
+            if (reqArticle.tags.includes(tag._id)) {
               tag.checked = 'true';
             }
           }
@@ -337,34 +337,38 @@ const update_article = [
             tags: results.tags,
             comments: results.comments,
             errors: errors.array(),
-            article,
+            reqArticle,
           });
         }
       );
       return;
     }
 
-    Article.findOneAndUpdate(
+    Article.findOne(
       { _id: req.params.id },
-      {
-        $set: {
-          author: article.author,
-          title: article.title,
-          content: article.content,
-          tags: article.tags,
-          comments: article.comments,
-          isPublished: article.isPublished,
-        },
-      },
-      { new: true, omitUndefined: true, runValidators: true },
-      (err: CallbackError) => {
+      (err: Error, foundArticle: IArticleModel) => {
         if (err) {
           return next(err);
         }
 
-        res.status(200).json({
-          title: 'Article updated successfully!',
-          article,
+        foundArticle.title = req.body.title;
+        foundArticle.content = req.body.content;
+        foundArticle.tags = req.body.tags ?? [];
+        foundArticle.comments = req.body.comments ?? [];
+        foundArticle.timestamp = foundArticle.isPublished
+          ? foundArticle.timestamp
+          : new Date();
+        foundArticle.isPublished = req.body.isPublished === 'on';
+
+        foundArticle.save((err, updatedArticle) => {
+          if (err) {
+            return next(err);
+          }
+
+          res.status(200).json({
+            title: 'Article updated successfully!',
+            article: updatedArticle,
+          });
         });
       }
     );
