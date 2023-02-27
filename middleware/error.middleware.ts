@@ -13,12 +13,14 @@ function errorMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  const status = err.status || 500;
+  const message =
+    err.message +
+    (process.env.NODE_ENV === 'development' ? `\n${err.stack}` : '');
 
-  res.status(err.status || 500).json({
-    message: err.message,
-    error: err,
+  res.status(status).json({
+    message,
   });
 }
+
 export default errorMiddleware;
